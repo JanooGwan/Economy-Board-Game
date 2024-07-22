@@ -7,16 +7,22 @@
 <h1>로그인</h1>
 <form th:action="@{/login}" method="post">
     <div>
-        <label>닉네임 </label>
-        <input type="text" name="닉네임" />
+        <label for="username">닉네임:</label>
+        <input type="text" id="username" name="username" />
     </div>
     <div>
-        <label>비밀번호 </label>
-        <input type="password" name="비밀번호" />
+        <label for="password">비밀번호:</label>
+        <input type="password" id="password" name="password" />
     </div>
     <div>
-        <button type="reset">로그인</button>
+        <button type="submit">로그인</button>
     </div>
 </form>
+<div th:if="${param.error}">
+    <p style="color:red;">로그인 실패 : 닉네임 또는 비밀번호가 잘못되었습니다.</p>
+</div>
+<div th:if="${param.logout}">
+    <p style="color:blue;">로그아웃 되었습니다.</p>
+</div>
 </body>
 </html>

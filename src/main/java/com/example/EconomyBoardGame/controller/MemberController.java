@@ -45,6 +45,11 @@ public class MemberController {
         return "login";
     }
 
+    @GetMapping("/logout")
+    public String showLogout() {
+        return "logout";
+    }
+
     @GetMapping("/account")
     public String showAccountPage(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
