@@ -31,6 +31,7 @@ public class MemberController {
     @PostMapping("/register")
     public String registerMember(@Valid @ModelAttribute("member") Member member, BindingResult result, Model model) {
         if (result.hasErrors()) {
+            System.out.println("오류 발생...");
             return "register";
         }
         memberService.register(member);

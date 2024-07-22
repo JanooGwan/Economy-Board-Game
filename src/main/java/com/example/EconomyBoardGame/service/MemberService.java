@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import com.example.EconomyBoardGame.entity.Member;
 import com.example.EconomyBoardGame.repository.MemberRepository;
 
+
 @Service
 public class MemberService {
 
@@ -15,6 +16,7 @@ public class MemberService {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
     }
+
 
     public Member register(Member member) {
         member.setPassword(passwordEncoder.encode(member.getPassword()));

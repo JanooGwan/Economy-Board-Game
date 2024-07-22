@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Login</title>
+    <title>로그인</title>
 </head>
 <body>
-<h1>Login</h1>
+<h1>로그인</h1>
 <form th:action="@{/login}" method="post">
     <div>
-        <label>Nickname:</label>
+        <label>닉네임 </label>
         <input type="text" name="닉네임" />
     </div>
     <div>
-        <label>Password:</label>
+        <label>비밀번호 </label>
         <input type="password" name="비밀번호" />
     </div>
     <div>
-        <button type="reset">Login</button>
+        <button type="reset">로그인</button>
     </div>
 </form>
 </body>

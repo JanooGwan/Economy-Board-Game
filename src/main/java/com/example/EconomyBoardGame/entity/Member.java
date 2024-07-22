@@ -21,18 +21,18 @@ public class Member {
     @Column(nullable = false, length = 200)
     private String introduction;
 
-    @Column(nullable = false)
-    private int gold = 0;
+    @Column
+    private int gold;
 
     @Column(nullable = false)
-    private int manpowerLow = 0;
+    private int manpowerLow;
 
     @Column(nullable = false)
-    private int manpowerMedium = 0;
+    private int manpowerMedium;
 
     @Column(nullable = false)
-    private int manpowerHigh = 0;
+    private int manpowerHigh;
 
     @Column(nullable = false)
-    private int minepower = 0;
+    private int minepower;
 }
