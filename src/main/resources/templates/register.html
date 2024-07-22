@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Register</title>
+    <title>회원가입</title>
 </head>
 <body>
-<h1>Register</h1>
+<h1>회원가입</h1>
 <form th:action="@{/register}" th:object="${member}" method="post">
     <div>
-        <label>Nickname:</label>
+        <label>닉네임 </label>
         <input type="text" th:field="*{nickname}" />
     </div>
     <div>
-        <label>Password:</label>
+        <label>비밀번호 </label>
         <input type="password" th:field="*{password}" />
     </div>
     <div>
-        <label>Introduction:</label>
+        <label>자기소개 </label>
         <input type="text" th:field="*{introduction}" />
     </div>
     <div>
-        <button type="회원가입">Register</button>
+        <button type="reset">가입</button>
     </div>
 </form>
 </body>

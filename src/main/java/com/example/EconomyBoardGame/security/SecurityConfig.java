@@ -9,9 +9,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -19,12 +19,13 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private MemberService memberService;
+    private final MemberService memberService;
+    private final PasswordEncoder passwordEncoder;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    @Autowired
+    public SecurityConfig(MemberService memberService, PasswordEncoder passwordEncoder) {
+        this.memberService = memberService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Bean
@@ -37,7 +38,7 @@ public class SecurityConfig {
             return org.springframework.security.core.userdetails.User
                     .withUsername(member.getNickname())
                     .password(member.getPassword())
-                    .authorities("회원")
+                    .authorities("USER")
                     .build();
         };
     }
@@ -45,7 +46,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder authManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authManagerBuilder.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
+        authManagerBuilder.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder);
         return authManagerBuilder.build();
     }
 
@@ -61,8 +62,7 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/home", true)
                         .permitAll()
                 )
-                .logout(logout -> logout
-                        .permitAll()
+                .logout(LogoutConfigurer::permitAll
                 );
         return http.build();
     }

@@ -1,19 +1,20 @@
 package com.example.EconomyBoardGame.service;
 
-import com.example.EconomyBoardGame.entity.Member;
-import com.example.EconomyBoardGame.repository.MemberRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.example.EconomyBoardGame.entity.Member;
+import com.example.EconomyBoardGame.repository.MemberRepository;
 
 @Service
 public class MemberService {
 
-    @Autowired
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
+        this.memberRepository = memberRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public Member register(Member member) {
         member.setPassword(passwordEncoder.encode(member.getPassword()));

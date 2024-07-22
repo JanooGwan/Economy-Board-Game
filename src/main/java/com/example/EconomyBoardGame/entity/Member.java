@@ -12,13 +12,13 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, length = 32)
     private String nickname;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 32)
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 200)
     private String introduction;
 
     @Column(nullable = false)
@@ -35,6 +35,4 @@ public class Member {
 
     @Column(nullable = false)
     private int minepower = 0;
-
-    // Getters and setters
 }
