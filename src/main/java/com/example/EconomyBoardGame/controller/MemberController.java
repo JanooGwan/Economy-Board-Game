@@ -3,6 +3,8 @@ package com.example.EconomyBoardGame.controller;
 import com.example.EconomyBoardGame.entity.Member;
 import com.example.EconomyBoardGame.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,5 +43,14 @@ public class MemberController {
     @GetMapping("/login")
     public String showLoginForm() {
         return "login";
+    }
+
+    @GetMapping("/account")
+    public String showAccountPage(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String nickname = auth.getName();
+        Member member = memberService.findByNickname(nickname);
+        model.addAttribute("member", member);
+        return "account";
     }
 }
