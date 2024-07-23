@@ -7,13 +7,14 @@
 <h1>계정 관리</h1>
 <div>
     <p>닉네임: <span th:text="${member.nickname}"></span></p>
-    <p>소개: <span th:text="${member.introduction}"></span></p>
+    <p>자기소개: <span th:text="${member.introduction}"></span></p>
     <p>골드: <span th:text="${member.gold}"></span></p>
     <p>채굴력: <span th:text="${member.minepower}"></span></p>
     <p>하급 인력: <span th:text="${member.manpowerLow}"></span></p>
     <p>중급 인력: <span th:text="${member.manpowerMedium}"></span></p>
     <p>고급 인력: <span th:text="${member.manpowerHigh}"></span></p>
 </div>
+<br>
 <a href="/logout">로그아웃</a>
 </body>
 </html>

@@ -7,11 +7,11 @@
 <h1>로그인</h1>
 <form th:action="@{/login}" method="post">
     <div>
-        <label for="username">닉네임:</label>
+        <label for="username">닉네임 </label>
         <input type="text" id="username" name="username" />
     </div>
     <div>
-        <label for="password">비밀번호:</label>
+        <label for="password">비밀번호 </label>
         <input type="password" id="password" name="password" />
     </div>
     <div>
@@ -24,5 +24,7 @@
 <div th:if="${param.logout}">
     <p style="color:blue;">로그아웃 되었습니다.</p>
 </div>
+<br>
+<a href="/register">회원가입</a>
 </body>
 </html>
