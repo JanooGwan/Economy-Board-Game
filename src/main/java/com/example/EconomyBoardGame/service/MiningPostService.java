@@ -1,5 +1,6 @@
 package com.example.EconomyBoardGame.service;
 
+import com.example.EconomyBoardGame.dto.MiningResult;
 import com.example.EconomyBoardGame.entity.Board;
 import com.example.EconomyBoardGame.entity.Member;
 import com.example.EconomyBoardGame.entity.Post;
@@ -29,7 +30,7 @@ public class MiningPostService {
         return postRepository.findById(id);
     }
 
-    public boolean mine(Member member, Post post) {
+    public MiningResult mine(Member member, Post post) {
         int gold = 0;
         boolean isSuccess = false;
         double successChance;
@@ -40,6 +41,7 @@ public class MiningPostService {
             case "초급 채굴":
                 successChance = 1.0;
                 gold = random.nextInt(6) + 5;
+                isSuccess = true;
                 break;
             case "중급 채굴":
                 successChance = 0.9;
@@ -69,7 +71,7 @@ public class MiningPostService {
             memberService.updateMember(member);
         }
 
-        return isSuccess;
+        return new MiningResult(isSuccess, gold);
     }
 
     public Board getMiningBoard() {

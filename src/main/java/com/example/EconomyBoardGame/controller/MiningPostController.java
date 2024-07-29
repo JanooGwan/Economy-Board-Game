@@ -1,5 +1,6 @@
 package com.example.EconomyBoardGame.controller;
 
+import com.example.EconomyBoardGame.dto.MiningResult;
 import com.example.EconomyBoardGame.entity.Member;
 import com.example.EconomyBoardGame.entity.Post;
 import com.example.EconomyBoardGame.service.MemberService;
@@ -29,17 +30,15 @@ public class MiningPostController {
 
         Post post = miningPostService.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
 
-        model.addAttribute("member", member);
+        MiningResult result = miningPostService.mine(member, post);
 
-        boolean isSuccess = miningPostService.mine(member, post);
-        int gainedGold = miningPostService.mine(member, post);
-
-        if (isSuccess) {
-            model.addAttribute("message", "채굴 성공! 골드를 획득했습니다.");
+        if (result.isSuccess()) {
+            model.addAttribute("message", "채굴 성공! " + result.getGold() + " 골드를 획득했습니다.");
         } else {
             model.addAttribute("message", "채굴 실패! 골드를 획득하지 못했습니다.");
         }
 
+        model.addAttribute("member", member);
         return showMiningBoard(model);
     }
 
