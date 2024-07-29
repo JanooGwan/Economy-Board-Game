@@ -5,14 +5,18 @@
 </head>
 <body>
 <h1>채굴 게시판</h1>
+<div th:if="${message}">
+    <p th:text="${message}" style="color:green;"></p>
+</div>
 <table>
     <tr>
-        <th>제목</th>
+        <th>클릭해서 골드를 획득하세요!</th>
     </tr>
     <tr th:each="post : ${posts}">
-        <td><a th:href="@{/mining/{id}(id=${post.id})}" th:text="${post.title}"></a></td>
+        <td><a th:href="@{/board/mining/{id}(id=${post.id})}" th:text="${post.title}"></a></td>
     </tr>
 </table>
+<br>
 <a href="/account">계정 관리</a>
 </body>
 </html>

@@ -29,7 +29,7 @@ public class MiningPostService {
         return postRepository.findById(id);
     }
 
-    public void mine(Member member, Post post) {
+    public int mine(Member member, Post post) {
         int gold = 0;
         double successChance;
         int minePower = member.getMinepower();
@@ -62,6 +62,7 @@ public class MiningPostService {
 
         member.setGold(member.getGold() + gold);
         memberService.updateMember(member);
+        return gold;
     }
 
     public Board getMiningBoard() {

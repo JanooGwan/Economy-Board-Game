@@ -58,4 +58,26 @@ public class MemberController {
         model.addAttribute("member", member);
         return "account";
     }
+
+    @PostMapping("/upgradeMiningPower")
+    public String upgradeMiningPower(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String nickname = auth.getName();
+        Member member = memberService.findByNickname(nickname);
+
+        int currentMiningPower = member.getMinepower();
+        int upgradeCost = (currentMiningPower + 1) * 100;
+
+        if (member.getGold() >= upgradeCost) {
+            member.setGold(member.getGold() - upgradeCost);
+            member.setMinepower(currentMiningPower + 1);
+            memberService.updateMember(member);
+            model.addAttribute("message", "채굴력이 업그레이드되었습니다!");
+        } else {
+            model.addAttribute("message", "골드가 부족합니다.");
+        }
+
+        model.addAttribute("member", member);
+        return "account";
+    }
 }
