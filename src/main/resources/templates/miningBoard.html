@@ -6,7 +6,7 @@
 <body>
 <h1>채굴 게시판</h1>
 <div th:if="${message}">
-    <p th:text="${message}" style="color:green;"></p>
+    <p th:text="${message}" th:classappend="${messageType == 'success' ? 'success-message' : 'failure-message'}"></p>
 </div>
 <table>
     <tr>
@@ -19,4 +19,12 @@
 <br>
 <a href="/account">계정 관리</a>
 </body>
+<style>
+    .success-message {
+        color: green;
+    }
+    .failure-message {
+        color: red;
+    }
+</style>
 </html>

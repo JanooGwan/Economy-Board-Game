@@ -34,8 +34,10 @@ public class MiningPostController {
 
         if (result.isSuccess()) {
             model.addAttribute("message", "채굴 성공! " + result.getGold() + " 골드를 획득했습니다.");
+            model.addAttribute("messageType", "success");
         } else {
             model.addAttribute("message", "채굴 실패! 골드를 획득하지 못했습니다.");
+            model.addAttribute("messageType", "failure");
         }
 
         model.addAttribute("member", member);
