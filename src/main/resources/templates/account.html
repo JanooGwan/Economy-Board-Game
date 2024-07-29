@@ -9,10 +9,19 @@
     <p>닉네임: <span th:text="${member.nickname}"></span></p>
     <p>자기소개: <span th:text="${member.introduction}"></span></p>
     <p>골드: <span th:text="${member.gold}"></span></p>
-    <p>채굴력: <span th:text="${member.minepower}"></span></p>
+    <p>채굴력: <span th:text="${member.minepower}"></span>
+        <form th:action="@{/upgradeMiningPower}" method="post" style="display:inline;">
+            <button type="submit">업그레이드</button>
+        </form>
+    </p>
+    <p>업그레이드 비용: <span th:text="${upgradeCost}"></span> 골드</p>
     <p>하급 인력: <span th:text="${member.manpowerLow}"></span></p>
     <p>중급 인력: <span th:text="${member.manpowerMedium}"></span></p>
     <p>고급 인력: <span th:text="${member.manpowerHigh}"></span></p>
+</div>
+<br>
+<div th:if="${message}">
+    <p th:text="${message}" style="color:green;"></p>
 </div>
 <br>
 <a href="/logout">로그아웃</a>

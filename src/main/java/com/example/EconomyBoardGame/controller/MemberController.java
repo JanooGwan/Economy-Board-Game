@@ -78,6 +78,8 @@ public class MemberController {
         }
 
         model.addAttribute("member", member);
+        model.addAttribute("upgradeCost", (member.getMinepower() + 1) * 100);
+
         return "account";
     }
 }
