@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>채굴 게시판</title>
+</head>
+<body>
+<h1>채굴 게시판</h1>
+<table>
+    <tr>
+        <th>제목</th>
+    </tr>
+    <tr th:each="post : ${posts}">
+        <td><a th:href="@{/mining/{id}(id=${post.id})}" th:text="${post.title}"></a></td>
+    </tr>
+</table>
+<a href="/account">계정 관리</a>
+</body>
+</html>
