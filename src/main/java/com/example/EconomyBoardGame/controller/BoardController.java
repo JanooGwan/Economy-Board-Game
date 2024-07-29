@@ -43,7 +43,7 @@ public class BoardController {
         Board board = boardService.findById(boardId).orElseThrow(() -> new IllegalArgumentException("Invalid board ID"));
         model.addAttribute("post", new Post());
         model.addAttribute("boardId", boardId);
-        return "newPost";
+        return "writePost";
     }
 
     @PostMapping("/{boardId}")
@@ -65,6 +65,7 @@ public class BoardController {
     public String viewPost(@PathVariable Long boardId, @PathVariable Long postId, Model model) {
         Post post = postService.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
         model.addAttribute("post", post);
+        model.addAttribute("board", post.getBoard());
         return "viewPost";
     }
 

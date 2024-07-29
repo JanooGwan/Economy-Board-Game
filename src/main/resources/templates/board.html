@@ -6,6 +6,7 @@
 <body>
 <h1 th:text="${board.name}"></h1>
 <a th:href="@{'/board/' + ${board.id} + '/new'}">글쓰기</a>
+<br>
 <table>
   <tr>
     <th>제목</th>
@@ -22,5 +23,6 @@
 </table>
 <br>
 <a href="/account">계정 관리</a>
+<a href="">홈</a>
 </body>
 </html>
