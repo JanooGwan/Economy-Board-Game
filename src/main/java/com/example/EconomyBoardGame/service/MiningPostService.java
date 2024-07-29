@@ -29,8 +29,9 @@ public class MiningPostService {
         return postRepository.findById(id);
     }
 
-    public int mine(Member member, Post post) {
+    public boolean mine(Member member, Post post) {
         int gold = 0;
+        boolean isSuccess = false;
         double successChance;
         int minePower = member.getMinepower();
         String miningType = post.getTitle().toLowerCase();
@@ -44,25 +45,31 @@ public class MiningPostService {
                 successChance = 0.9;
                 if (random.nextDouble() <= successChance) {
                     gold = random.nextInt(5) + 1 + minePower;
+                    isSuccess = true;
                 }
                 break;
             case "고급 채굴":
                 successChance = 0.1;
                 if (random.nextDouble() <= successChance) {
                     gold = minePower * 10;
+                    isSuccess = true;
                 }
                 break;
             case "특수 채굴":
                 successChance = 0.00001;
                 if (random.nextDouble() <= successChance) {
                     gold = minePower * 30000;
+                    isSuccess = true;
                 }
                 break;
         }
 
-        member.setGold(member.getGold() + gold);
-        memberService.updateMember(member);
-        return gold;
+        if (isSuccess) {
+            member.setGold(member.getGold() + gold);
+            memberService.updateMember(member);
+        }
+
+        return isSuccess;
     }
 
     public Board getMiningBoard() {

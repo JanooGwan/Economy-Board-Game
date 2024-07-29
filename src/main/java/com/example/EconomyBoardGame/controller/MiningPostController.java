@@ -29,10 +29,16 @@ public class MiningPostController {
 
         Post post = miningPostService.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
 
+        model.addAttribute("member", member);
+
+        boolean isSuccess = miningPostService.mine(member, post);
         int gainedGold = miningPostService.mine(member, post);
 
-        model.addAttribute("member", member);
-        model.addAttribute("message", "채굴 성공! " + gainedGold + " 골드를 획득했습니다.");
+        if (isSuccess) {
+            model.addAttribute("message", "채굴 성공! 골드를 획득했습니다.");
+        } else {
+            model.addAttribute("message", "채굴 실패! 골드를 획득하지 못했습니다.");
+        }
 
         return showMiningBoard(model);
     }
