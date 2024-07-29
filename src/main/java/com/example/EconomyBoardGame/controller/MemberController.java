@@ -59,7 +59,7 @@ public class MemberController {
         return "account";
     }
 
-    @PostMapping("/upgradeMiningPower")
+    @PostMapping("/account/upgradeMiningPower")
     public String upgradeMiningPower(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String nickname = auth.getName();
