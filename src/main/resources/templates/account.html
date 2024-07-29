@@ -5,12 +5,13 @@
 </head>
 <body>
 <h1>계정 관리</h1>
+<br>
 <div>
     <p>닉네임: <span th:text="${member.nickname}"></span></p>
     <p>자기소개: <span th:text="${member.introduction}"></span></p>
     <p>골드: <span th:text="${member.gold}"></span></p>
     <p>채굴력: <span th:text="${member.minepower}"></span>
-        <form th:action="@{/upgradeMiningPower}" method="post" style="display:inline;">
+        <form th:action="@{/account/upgradeMiningPower}" method="post" style="display:inline;">
             <button type="submit">업그레이드</button>
         </form>
     </p>
@@ -23,6 +24,8 @@
 <div th:if="${message}">
     <p th:text="${message}" style="color:green;"></p>
 </div>
+<br>
+<a href="/">홈</a>
 <br>
 <a href="/logout">로그아웃</a>
 </body>

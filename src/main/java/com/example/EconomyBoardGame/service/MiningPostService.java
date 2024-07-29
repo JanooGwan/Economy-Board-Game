@@ -40,7 +40,7 @@ public class MiningPostService {
         switch (miningType) {
             case "초급 채굴":
                 successChance = 1.0;
-                gold = random.nextInt(6) + 5;
+                gold = random.nextInt(3) + 1;
                 isSuccess = true;
                 break;
             case "중급 채굴":
