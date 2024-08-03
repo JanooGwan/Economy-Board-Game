@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="${post.title}">게시물 보기</title>
+    <title>게시물 보기</title>
 </head>
 <body>
 <h1 th:text="${post.title}"></h1>
@@ -9,13 +9,14 @@
 <p>작성 날짜: <span th:text="${post.createdDate}"></span></p>
 <p>수정 날짜: <span th:text="${post.updatedDate}"></span></p>
 <p th:text="${post.content}"></p>
-<form th:action="@{'/board/' + ${board.id} + '/' + ${post.id} + '/edit'}" method="post" style="display:inline;">
+
+<form th:action="@{'/board/' + ${boardId} + '/' + ${post.id} + '/edit'}" method="get" style="display:inline;">
     <button type="submit">수정</button>
 </form>
-<form th:action="@{'/board/' + ${board.id} + '/' + ${post.id} + '/delete'}" method="post" style="display:inline;">
+<form th:action="@{'/board/' + ${boardId} + '/' + ${post.id} + '/delete'}" method="post" style="display:inline;">
     <button type="submit">삭제</button>
 </form>
 <br>
-<a th:href="@{'/board/' + ${board.id}}">게시판으로 돌아가기</a>
+<a th:href="@{'/board/' + ${boardId}}">게시판으로 돌아가기</a>
 </body>
 </html>
