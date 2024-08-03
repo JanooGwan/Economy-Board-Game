@@ -63,7 +63,7 @@ public class GamblePostService {
             int reward = (int) (goldCost * rewardMultiplier);
             member.setGold(member.getGold() + reward);
             memberRepository.save(member);
-            return "도박에 성공했습니다! " + reward + " 골드를 벌었습니다.";
+            return "도박에 성공했습니다! " + (reward - goldCost) + " 골드를 벌었습니다.";
         } else {
             memberRepository.save(member);
             return "도박에 실패했습니다... " + goldCost + " 골드를 잃었습니다.";
