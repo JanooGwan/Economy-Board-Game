@@ -1,8 +1,11 @@
 package com.example.EconomyBoardGame.entity;
 
+import com.example.EconomyBoardGame.repository.MemberRepository;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.List;
 
@@ -10,6 +13,7 @@ import java.util.List;
 @Setter
 @Entity
 public class Member {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -40,4 +44,5 @@ public class Member {
 
     @OneToMany(mappedBy = "writer")
     private List<Post> posts;
+
 }
