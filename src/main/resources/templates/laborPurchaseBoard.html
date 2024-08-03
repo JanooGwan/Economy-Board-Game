@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>인력 구매 게시판</title>
+</head>
+<body>
+<h1>인력 구매 게시판</h1>
+<p>보유한 골드로 인력을 구매할 수 있습니다.</p>
+<p>보유하고 있는 인력 수 만큼 자동으로 골드를 벌 수 있습니다.(10초마다 획득)</p>
+<br>
+<div th:if="${result}">
+  <p th:text="${result}" th:classappend="${messageType == 'success' ? 'success-message' : 'failure-message'}"></p>
+</div>
+<br>
+<table>
+  <tr>
+    <th>인력 종류</th>
+  </tr>
+  <tr th:each="post : ${posts}">
+    <td><a th:href="@{'/labor/' + ${post.id}}" th:text="${post.title}"></a></td>
+  </tr>
+</table>
+<br>
+<a href="/account">계정 관리</a>
+<br>
+<a href="/">홈</a>
+</body>
+<style>
+  .success-message {
+    color: green;
+  }
+  .failure-message {
+    color: red;
+  }
+</style>
+</html>
