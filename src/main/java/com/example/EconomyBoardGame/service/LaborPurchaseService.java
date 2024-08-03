@@ -1,7 +1,9 @@
 package com.example.EconomyBoardGame.service;
 
+import com.example.EconomyBoardGame.entity.Board;
 import com.example.EconomyBoardGame.entity.Member;
 import com.example.EconomyBoardGame.entity.Post;
+import com.example.EconomyBoardGame.repository.BoardRepository;
 import com.example.EconomyBoardGame.repository.MemberRepository;
 import com.example.EconomyBoardGame.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ public class LaborPurchaseService {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private BoardRepository boardRepository;
 
     public String purchaseLabor(Long postId, Member member) {
         Optional<Post> optionalPost = postRepository.findById(postId);
@@ -72,5 +77,9 @@ public class LaborPurchaseService {
             member.setGold(member.getGold() + goldEarned);
             memberRepository.save(member);
         }
+    }
+
+    public Board getLaborPurchaseBoard() {
+        return boardRepository.findByName("인력구매게시판");
     }
 }
