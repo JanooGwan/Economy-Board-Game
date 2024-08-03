@@ -66,7 +66,7 @@ public class LaborPurchaseService {
         }
 
         memberRepository.save(member);
-        return title + " 인력 구매를 성공했습니다.";
+        return title + " 구매를 성공했습니다.";
     }
 
     @Scheduled(fixedRate = 10000)

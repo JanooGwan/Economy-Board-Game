@@ -20,14 +20,20 @@ public class LaborPurchaseController {
     @Autowired
     private MemberService memberService;
 
-    @GetMapping("/board/4")
+    @GetMapping("/labor/{id}")
     public String purchaseLabor(@PathVariable Long id, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String nickname = auth.getName();
         Member member = memberService.findByNickname(nickname);
         String result = laborPurchaseService.purchaseLabor(id, member);
         model.addAttribute("result", result);
-        model.addAttribute("messageType", result.startsWith("인력 구매에 성공했습니다.") ? "success" : "failure");
+        model.addAttribute("messageType", result.endsWith("성공했습니다.") ? "success" : "failure");
+        model.addAttribute("posts", laborPurchaseService.getLaborPurchaseBoard().getPosts());
+        return showLaborPurchaseBoard(model);
+    }
+
+    @GetMapping("/board/4")
+    public String showLaborPurchaseBoard(Model model) {
         model.addAttribute("posts", laborPurchaseService.getLaborPurchaseBoard().getPosts());
         return "laborPurchaseBoard";
     }
