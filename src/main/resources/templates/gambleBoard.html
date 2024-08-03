@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>도박 게시판</title>
+</head>
+<body>
+<h1>도박 게시판</h1>
+<br>
+<p>행운을 빕니다...!</p>
+<br>
+<table>
+    <tr>
+        <th>도박 종류</th>
+    </tr>
+    <tr th:each="post : ${posts}">
+        <td><a th:href="@{'/gamble/' + ${post.id}}" th:text="${post.title}"></a></td>
+    </tr>
+</table>
+<br>
+<a href="/account">계정 관리</a>
+<a href="/">홈</a>
+</body>
+</html>

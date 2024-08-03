@@ -20,7 +20,7 @@ public class GamblePostController {
     @Autowired
     private MemberService memberService;
 
-    @GetMapping("/board/3")
+    @GetMapping("/gamble/{id}")
     public String gamble(@PathVariable Long id, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String nickname = auth.getName();
@@ -29,5 +29,11 @@ public class GamblePostController {
         model.addAttribute("result", result);
         model.addAttribute("member", member);
         return "gambleResult";
+    }
+
+    @GetMapping("/board/3")
+    public String showGambleBoard(Model model) {
+        model.addAttribute("posts", gamblePostService.getGambleBoard().getPosts());
+        return "gambleBoard";
     }
 }

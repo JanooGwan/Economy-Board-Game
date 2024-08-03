@@ -1,7 +1,9 @@
 package com.example.EconomyBoardGame.service;
 
+import com.example.EconomyBoardGame.entity.Board;
 import com.example.EconomyBoardGame.entity.Member;
 import com.example.EconomyBoardGame.entity.Post;
+import com.example.EconomyBoardGame.repository.BoardRepository;
 import com.example.EconomyBoardGame.repository.MemberRepository;
 import com.example.EconomyBoardGame.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,9 @@ public class GamblePostService {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private BoardRepository boardRepository;
 
     public String gamble(Long postId, Member member) {
         Optional<Post> optionalPost = postRepository.findById(postId);
@@ -63,5 +68,9 @@ public class GamblePostService {
             memberRepository.save(member);
             return "도박에 실패했습니다... " + goldCost + " 골드를 잃었습니다.";
         }
+    }
+
+    public Board getGambleBoard() {
+        return boardRepository.findByName("도박게시판");
     }
 }

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>도박 결과</title>
+</head>
+<body>
+<br>
+<h1>도박 결과</h1>
+<br>
+<p th:text="${result}"></p>
+<p>현재 골드: <span th:text="${member.gold}"></span></p>
+<br>
+<a href="/board/3">도박 게시판으로 돌아가기</a>
+<br>
+<a href="/account">계정 관리</a>
+<br>
+<a href="/">홈</a>
+</body>
+</html>
