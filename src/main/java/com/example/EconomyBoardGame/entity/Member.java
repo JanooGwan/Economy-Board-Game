@@ -42,6 +42,9 @@ public class Member {
     @Column(nullable = false)
     private int minepower;
 
+    @Column(nullable = false)
+    private int clickCount;
+
     @OneToMany(mappedBy = "writer")
     private List<Post> posts;
 
