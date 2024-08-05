@@ -7,10 +7,10 @@ import com.example.EconomyBoardGame.entity.Post;
 import com.example.EconomyBoardGame.repository.BoardRepository;
 import com.example.EconomyBoardGame.repository.MemberRepository;
 import com.example.EconomyBoardGame.repository.PostRepository;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jakarta.servlet.http.HttpSession;
 import java.util.Optional;
 import java.util.Random;
 
@@ -35,16 +35,16 @@ public class MiningPostService {
         return postRepository.findById(id);
     }
 
-    public MiningResult mine(Member member, Post post, HttpSession session, String inputCaptcha) {
-        if (member.getClickCount() >= 100 && !verifyCaptcha(session, inputCaptcha)) {
-            return new MiningResult(false, 0);
-        }
-
+    public MiningResult mine(Member member, Post post) {
         int gold = 0;
         boolean isSuccess = false;
         double successChance;
         int minePower = member.getMinepower();
         String miningType = post.getTitle().toLowerCase();
+
+        if (member.getClickCount() >= 100) {
+            return new MiningResult(false, 0);
+        }
 
         switch (miningType) {
             case "초급 채굴":
@@ -103,3 +103,4 @@ public class MiningPostService {
         return false;
     }
 }
+

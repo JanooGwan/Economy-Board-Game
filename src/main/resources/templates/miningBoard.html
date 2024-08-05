@@ -8,20 +8,23 @@
 <div th:if="${message}">
     <p th:text="${message}" th:classappend="${messageType == 'success' ? 'success-message' : 'failure-message'}"></p>
 </div>
+<div th:if="${captcha}">
+    <p th:text="'네 자리 숫자를 입력하세요 : ' + ${captcha}"></p>
+    <form th:action="@{/board/mining/verifyCaptcha}" method="post">
+        <input type="text" name="inputCaptcha" />
+        <button type="submit">Verify</button>
+    </form>
+</div>
 <table>
     <tr>
         <th>클릭해서 골드를 획득하세요!</th>
     </tr>
-</table>
-<br>
-<table>
     <tr th:each="post : ${posts}">
         <td><a th:href="@{/board/mining/{id}(id=${post.id})}" th:text="${post.title}"></a></td>
     </tr>
 </table>
 <br>
 <a href="/account">계정 관리</a>
-<br>
 <a href="/">홈</a>
 </body>
 <style>

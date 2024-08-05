@@ -4,6 +4,7 @@ public class MiningResult {
     private boolean success;
     private int gold;
 
+
     public MiningResult(boolean success, int gold) {
         this.success = success;
         this.gold = gold;
