@@ -70,7 +70,7 @@ public class MiningPostController {
         }
 
         Integer generatedCaptcha = (Integer) session.getAttribute("captcha");
-        model.addAttribute("error", "매크로 확인 검증에 실패했습니다.");
+        model.addAttribute("error", "매크로 검증에 실패했습니다.");
         model.addAttribute("captcha", generatedCaptcha);
         return "captcha";
     }
