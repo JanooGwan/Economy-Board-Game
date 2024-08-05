@@ -35,8 +35,8 @@ public class MiningPostService {
         return postRepository.findById(id);
     }
 
-    public MiningResult mine(Member member, Post post) {
-        if (member.getClickCount() >= 100 && !verifyCaptcha(member)) {
+    public MiningResult mine(Member member, Post post, HttpSession session, String inputCaptcha) {
+        if (member.getClickCount() >= 100 && !verifyCaptcha(session, inputCaptcha)) {
             return new MiningResult(false, 0);
         }
 
@@ -94,7 +94,7 @@ public class MiningPostService {
         return random.nextInt(9000) + 1000;
     }
 
-    public boolean verifyCaptcha(Member member, HttpSession session, String inputCaptcha) {
+    public boolean verifyCaptcha(HttpSession session, String inputCaptcha) {
         Integer generatedCaptcha = (Integer) session.getAttribute("captcha");
         if (generatedCaptcha != null && generatedCaptcha.toString().equals(inputCaptcha)) {
             session.removeAttribute("captcha");

@@ -5,15 +5,18 @@ import com.example.EconomyBoardGame.entity.Member;
 import com.example.EconomyBoardGame.entity.Post;
 import com.example.EconomyBoardGame.service.MemberService;
 import com.example.EconomyBoardGame.service.MiningPostService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @Controller
+@RequestMapping("/board/mining")
 public class MiningPostController {
 
     @Autowired
@@ -22,31 +25,53 @@ public class MiningPostController {
     @Autowired
     private MemberService memberService;
 
-    @GetMapping("/board/mining/{id}")
-    public String mine(@PathVariable Long id, Model model) {
+    @GetMapping("/{id}")
+    public String mine(@PathVariable Long id, Model model, HttpSession session, @RequestParam(required = false) String inputCaptcha) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String nickname = auth.getName();
+        Member member = memberService.findByNickname(nickname);
+        Optional<Post> postOpt = miningPostService.findById(id);
+
+        if (postOpt.isPresent()) {
+            Post post = postOpt.get();
+
+            if (member.getClickCount() >= 100) {
+                if (inputCaptcha != null && miningPostService.verifyCaptcha(session, inputCaptcha)) {
+                    member.setClickCount(0);
+                } else {
+                    Integer captcha = (Integer) session.getAttribute("captcha");
+                    if (captcha == null) {
+                        captcha = miningPostService.generateCaptcha();
+                        session.setAttribute("captcha", captcha);
+                    }
+                    model.addAttribute("captcha", captcha);
+                    return "captcha";
+                }
+            }
+
+            MiningResult result = miningPostService.mine(member, post, session, inputCaptcha);
+            model.addAttribute("result", result);
+            return "miningResult";
+        }
+
+        return "redirect:/board";
+    }
+
+    @PostMapping("/verifyCaptcha")
+    public String verifyCaptcha(@RequestParam String inputCaptcha, HttpSession session, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String nickname = auth.getName();
         Member member = memberService.findByNickname(nickname);
 
-        Post post = miningPostService.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
-
-        MiningResult result = miningPostService.mine(member, post);
-
-        if (result.isSuccess()) {
-            model.addAttribute("message", "채굴 성공! " + result.getGold() + " 골드를 획득했습니다.");
-            model.addAttribute("messageType", "success");
-        } else {
-            model.addAttribute("message", "채굴 실패! 골드를 획득하지 못했습니다.");
-            model.addAttribute("messageType", "failure");
+        if (miningPostService.verifyCaptcha(session, inputCaptcha)) {
+            member.setClickCount(0);
+            memberService.updateMember(member);
+            return "redirect:/board/mining";
         }
 
-        model.addAttribute("member", member);
-        return showMiningBoard(model);
-    }
-
-    @GetMapping("/board/1")
-    public String showMiningBoard(Model model) {
-        model.addAttribute("posts", miningPostService.getMiningBoard().getPosts());
-        return "miningBoard";
+        Integer generatedCaptcha = (Integer) session.getAttribute("captcha");
+        model.addAttribute("error", "매크로 확인 검증에 실패했습니다.");
+        model.addAttribute("captcha", generatedCaptcha);
+        return "captcha";
     }
 }
