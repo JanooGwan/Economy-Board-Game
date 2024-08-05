@@ -5,7 +5,9 @@ import com.example.EconomyBoardGame.entity.Board;
 import com.example.EconomyBoardGame.entity.Member;
 import com.example.EconomyBoardGame.entity.Post;
 import com.example.EconomyBoardGame.repository.BoardRepository;
+import com.example.EconomyBoardGame.repository.MemberRepository;
 import com.example.EconomyBoardGame.repository.PostRepository;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,9 @@ public class MiningPostService {
     private MemberService memberService;
 
     @Autowired
+    private MemberRepository memberRepository;
+
+    @Autowired
     private BoardRepository boardRepository;
 
     private final Random random = new Random();
@@ -31,6 +36,10 @@ public class MiningPostService {
     }
 
     public MiningResult mine(Member member, Post post) {
+        if (member.getClickCount() >= 100 && !verifyCaptcha(member)) {
+            return new MiningResult(false, 0);
+        }
+
         int gold = 0;
         boolean isSuccess = false;
         double successChance;
@@ -71,10 +80,26 @@ public class MiningPostService {
             memberService.updateMember(member);
         }
 
+        member.setClickCount(member.getClickCount() + 1);
+        memberRepository.save(member);
+
         return new MiningResult(isSuccess, gold);
     }
 
     public Board getMiningBoard() {
         return boardRepository.findByName("채굴게시판");
+    }
+
+    public int generateCaptcha() {
+        return random.nextInt(9000) + 1000;
+    }
+
+    public boolean verifyCaptcha(Member member, HttpSession session, String inputCaptcha) {
+        Integer generatedCaptcha = (Integer) session.getAttribute("captcha");
+        if (generatedCaptcha != null && generatedCaptcha.toString().equals(inputCaptcha)) {
+            session.removeAttribute("captcha");
+            return true;
+        }
+        return false;
     }
 }
