@@ -42,10 +42,6 @@ public class MiningPostService {
         int minePower = member.getMinepower();
         String miningType = post.getTitle().toLowerCase();
 
-        if (member.getClickCount() >= 100) {
-            return new MiningResult(false, 0);
-        }
-
         switch (miningType) {
             case "초급 채굴":
                 successChance = 1.0;
@@ -80,27 +76,21 @@ public class MiningPostService {
             memberService.updateMember(member);
         }
 
-        member.setClickCount(member.getClickCount() + 1);
-        memberRepository.save(member);
-
         return new MiningResult(isSuccess, gold);
+    }
+
+    public boolean verifyCaptcha(HttpSession session, String inputCaptcha) {
+        String generatedCaptcha = (String) session.getAttribute("captcha");
+        return generatedCaptcha != null && generatedCaptcha.equals(inputCaptcha);
+    }
+
+    public String generateCaptcha() {
+        Random random = new Random();
+        int captcha = 1000 + random.nextInt(9000);
+        return String.valueOf(captcha);
     }
 
     public Board getMiningBoard() {
         return boardRepository.findByName("채굴게시판");
     }
-
-    public int generateCaptcha() {
-        return random.nextInt(9000) + 1000;
-    }
-
-    public boolean verifyCaptcha(HttpSession session, String inputCaptcha) {
-        Integer generatedCaptcha = (Integer) session.getAttribute("captcha");
-        if (generatedCaptcha != null && generatedCaptcha.toString().equals(inputCaptcha)) {
-            session.removeAttribute("captcha");
-            return true;
-        }
-        return false;
-    }
 }
-

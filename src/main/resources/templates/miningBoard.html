@@ -8,14 +8,16 @@
 <div th:if="${message}">
     <p th:text="${message}" th:classappend="${messageType == 'success' ? 'success-message' : 'failure-message'}"></p>
 </div>
+
 <div th:if="${captcha}">
-    <p th:text="'네 자리 숫자를 입력하세요 : ' + ${captcha}"></p>
+    <p>네 자리 숫자를 입력하세요 : <span th:text="${captcha}"></span></p>
     <form th:action="@{/board/mining/verifyCaptcha}" method="post">
-        <input type="text" name="inputCaptcha" />
+        <input type="text" name="inputCaptcha"/>
         <button type="submit">Verify</button>
     </form>
 </div>
-<table>
+
+<table th:unless="${captcha}">
     <tr>
         <th>클릭해서 골드를 획득하세요!</th>
     </tr>
