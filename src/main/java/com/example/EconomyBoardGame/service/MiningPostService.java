@@ -35,7 +35,24 @@ public class MiningPostService {
         return postRepository.findById(id);
     }
 
-    public MiningResult mine(Member member, Post post) {
+    public MiningResult mine(Member member, Post post, HttpSession session, String inputCaptcha) {
+        if (member.getClickCount() >= 100) {
+            String captcha = (String) session.getAttribute("captcha");
+            if (captcha == null) {
+                captcha = generateCaptcha();
+                session.setAttribute("captcha", captcha);
+            }
+            if (inputCaptcha != null) {
+                if (!verifyCaptcha(session, inputCaptcha)) {
+                    return new MiningResult(false, 0, "CAPTCHA verification required");
+                } else {
+                    member.setClickCount(0);
+                }
+            } else {
+                return new MiningResult(false, 0, "CAPTCHA verification required");
+            }
+        }
+
         int gold = 0;
         boolean isSuccess = false;
         double successChance;
@@ -76,18 +93,18 @@ public class MiningPostService {
             memberService.updateMember(member);
         }
 
-        return new MiningResult(isSuccess, gold);
-    }
-
-    public boolean verifyCaptcha(HttpSession session, String inputCaptcha) {
-        String generatedCaptcha = (String) session.getAttribute("captcha");
-        return generatedCaptcha != null && generatedCaptcha.equals(inputCaptcha);
+        return new MiningResult(isSuccess, gold, null);
     }
 
     public String generateCaptcha() {
         Random random = new Random();
-        int captcha = 1000 + random.nextInt(9000);
+        int captcha = random.nextInt(9000) + 1000; // 1000부터 9999 사이의 네 자리 숫자 생성
         return String.valueOf(captcha);
+    }
+
+    public boolean verifyCaptcha(HttpSession session, String inputCaptcha) {
+        String captcha = (String) session.getAttribute("captcha");
+        return captcha != null && captcha.equals(inputCaptcha);
     }
 
     public Board getMiningBoard() {

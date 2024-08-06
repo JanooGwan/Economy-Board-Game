@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 @Controller
 public class MiningPostController {
 
@@ -32,30 +31,16 @@ public class MiningPostController {
         String nickname = auth.getName();
         Member member = memberService.findByNickname(nickname);
 
-        Post post = miningPostService.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물 ID 입니다."));
+        Post post = miningPostService.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
 
-        if (member.getClickCount() >= 100) {
-            Integer captcha = (Integer) session.getAttribute("captcha");
-            if (captcha == null) {
-                captcha = Integer.valueOf(miningPostService.generateCaptcha());
-                session.setAttribute("captcha", captcha);
-            }
-            if (inputCaptcha != null) {
-                if (miningPostService.verifyCaptcha(session, inputCaptcha)) {
-                    member.setClickCount(0);
-                } else {
-                    model.addAttribute("message", "숫자를 올바르게 입력해주세요.");
-                    model.addAttribute("messageType", "failure");
-                    model.addAttribute("captcha", captcha);
-                    return showMiningBoard(model, member);
-                }
-            } else {
-                model.addAttribute("captcha", captcha);
-                return showMiningBoard(model, member);
-            }
+        MiningResult result = miningPostService.mine(member, post, session, inputCaptcha);
+
+        if (result.getMessage() != null && result.getMessage().equals("CAPTCHA verification required")) {
+            model.addAttribute("captcha", session.getAttribute("captcha"));
+            model.addAttribute("post", post);
+            model.addAttribute("member", member);
+            return "miningBoard";
         }
-
-        MiningResult result = miningPostService.mine(member, post);
 
         if (result.isSuccess()) {
             model.addAttribute("message", "채굴 성공! " + result.getGold() + " 골드를 획득했습니다.");
@@ -71,15 +56,14 @@ public class MiningPostController {
 
     @PostMapping("/board/mining/verifyCaptcha")
     public String verifyCaptcha(@RequestParam String inputCaptcha, HttpSession session, Model model) {
-        Integer generatedCaptcha = (Integer) session.getAttribute("captcha");
-        if (generatedCaptcha != null && generatedCaptcha.toString().equals(inputCaptcha)) {
+        String captcha = (String) session.getAttribute("captcha");
+        if (captcha != null && captcha.equals(inputCaptcha)) {
             session.removeAttribute("captcha");
-            return "redirect:/board/1";
+            return "redirect:/board/1"; // 채굴 게시판으로 리디렉션
         }
 
-        model.addAttribute("message", "숫자를 올바르게 입력해주세요.");
-        model.addAttribute("messageType", "failure");
-        model.addAttribute("captcha", generatedCaptcha);
+        model.addAttribute("error", "CAPTCHA verification failed");
+        model.addAttribute("captcha", captcha);
         return "miningBoard";
     }
 
