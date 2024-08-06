@@ -52,7 +52,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/register", "/login", "/resources/**").permitAll()
-                        .requestMatchers("/account").authenticated()
+                        .requestMatchers("/account", "/board/mining/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

@@ -7,10 +7,10 @@ import com.example.EconomyBoardGame.entity.Post;
 import com.example.EconomyBoardGame.repository.BoardRepository;
 import com.example.EconomyBoardGame.repository.MemberRepository;
 import com.example.EconomyBoardGame.repository.PostRepository;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jakarta.servlet.http.HttpSession;
 import java.util.Optional;
 import java.util.Random;
 
@@ -36,23 +36,6 @@ public class MiningPostService {
     }
 
     public MiningResult mine(Member member, Post post, HttpSession session, String inputCaptcha) {
-        if (member.getClickCount() >= 100) {
-            String captcha = (String) session.getAttribute("captcha");
-            if (captcha == null) {
-                captcha = generateCaptcha();
-                session.setAttribute("captcha", captcha);
-            }
-            if (inputCaptcha != null) {
-                if (!verifyCaptcha(session, inputCaptcha)) {
-                    return new MiningResult(false, 0, "CAPTCHA verification required");
-                } else {
-                    member.setClickCount(0);
-                }
-            } else {
-                return new MiningResult(false, 0, "CAPTCHA verification required");
-            }
-        }
-
         int gold = 0;
         boolean isSuccess = false;
         double successChance;
@@ -93,21 +76,20 @@ public class MiningPostService {
             memberService.updateMember(member);
         }
 
-        return new MiningResult(isSuccess, gold, null);
+        return new MiningResult(isSuccess, gold, isSuccess ? "채굴 성공! " + gold + " 골드를 획득했습니다." : "채굴 실패! 골드를 획득하지 못했습니다.");
+    }
+
+    public Board getMiningBoard() {
+        return boardRepository.findByName("채굴게시판");
     }
 
     public String generateCaptcha() {
-        Random random = new Random();
-        int captcha = random.nextInt(9000) + 1000; // 1000부터 9999 사이의 네 자리 숫자 생성
+        int captcha = random.nextInt(9000) + 1000;
         return String.valueOf(captcha);
     }
 
     public boolean verifyCaptcha(HttpSession session, String inputCaptcha) {
         String captcha = (String) session.getAttribute("captcha");
         return captcha != null && captcha.equals(inputCaptcha);
-    }
-
-    public Board getMiningBoard() {
-        return boardRepository.findByName("채굴게시판");
     }
 }

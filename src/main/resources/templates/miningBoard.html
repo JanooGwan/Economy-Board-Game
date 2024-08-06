@@ -9,11 +9,12 @@
     <p th:text="${message}" th:classappend="${messageType == 'success' ? 'success-message' : 'failure-message'}"></p>
 </div>
 <div th:if="${captcha}">
-    <p>네 자리 숫자를 입력하세요 : <span th:text="${captcha}"></span></p>
-    <form th:action="@{/board/mining/{id}(id=${post.id})}" method="post">
-        <input type="text" name="inputCaptcha"/>
+    <form method="POST" action="/board/mining/verifyCaptcha">
+        <label>네 자리 숫자를 입력하세요 : <span th:text="${captcha}"></span></label>
+        <input type="text" name="inputCaptcha" required/>
         <button type="submit">Verify</button>
     </form>
+
 </div>
 <table th:if="${captcha == null}">
     <tr>
