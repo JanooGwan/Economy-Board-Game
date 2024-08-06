@@ -44,7 +44,7 @@ public class MiningPostService {
         String message = "";
 
         if (member.getClickCount() >= 100) {
-            String captcha = (String) session.getAttribute("captcha");
+            Integer captcha = (Integer) session.getAttribute("captcha");
             if (captcha == null) {
                 captcha = generateCaptcha();
                 session.setAttribute("captcha", captcha);
@@ -53,12 +53,15 @@ public class MiningPostService {
                 if (verifyCaptcha(session, inputCaptcha)) {
                     member.setClickCount(0);
                 } else {
-                    return new MiningResult(false, 0, "CAPTCHA verification required");
+                    return new MiningResult(false, 0, "매크로 사용 여부 검증이 필요합니다.");
                 }
             } else {
-                return new MiningResult(false, 0, "CAPTCHA verification required");
+                return new MiningResult(false, 0, "매크로 사용 여부 검증이 필요합니다.");
             }
         }
+
+        member.setClickCount(member.getClickCount() + 1);
+        memberService.updateMember(member);
 
         switch (miningType) {
             case "초급 채굴":
@@ -101,14 +104,14 @@ public class MiningPostService {
     }
 
 
+
     public Board getMiningBoard() {
         return boardRepository.findByName("채굴게시판");
     }
 
-    public String generateCaptcha() {
+    public Integer generateCaptcha() {
         Random random = new Random();
-        int captcha = 1000 + random.nextInt(9000);
-        return String.valueOf(captcha);
+        return 1000 + random.nextInt(9000);
     }
 
     public boolean verifyCaptcha(HttpSession session, String inputCaptcha) {

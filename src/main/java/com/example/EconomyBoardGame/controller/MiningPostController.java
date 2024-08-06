@@ -31,10 +31,10 @@ public class MiningPostController {
         String nickname = auth.getName();
         Member member = memberService.findByNickname(nickname);
 
-        Post post = miningPostService.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
+        Post post = miningPostService.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물 ID 입니다."));
 
         if (member.getClickCount() >= 100) {
-            String captcha = (String) session.getAttribute("captcha");
+            Integer captcha = (Integer) session.getAttribute("captcha");
             if (captcha == null) {
                 captcha = miningPostService.generateCaptcha();
                 session.setAttribute("captcha", captcha);
@@ -43,7 +43,7 @@ public class MiningPostController {
                 if (miningPostService.verifyCaptcha(session, inputCaptcha)) {
                     member.setClickCount(0);
                 } else {
-                    model.addAttribute("error", "CAPTCHA verification failed");
+                    model.addAttribute("error", "인증에 실패했습니다.");
                     model.addAttribute("captcha", captcha);
                     return showMiningBoard(model, member);
                 }
@@ -55,11 +55,12 @@ public class MiningPostController {
 
         MiningResult result = miningPostService.mine(member, post, session, inputCaptcha);
 
+
         if (result.isSuccess()) {
-            model.addAttribute("message", "채굴 성공! " + result.getGold() + " 골드를 획득했습니다.");
+            model.addAttribute("message", result.getMessage());
             model.addAttribute("messageType", "success");
         } else {
-            model.addAttribute("message", "채굴 실패! 골드를 획득하지 못했습니다.");
+            model.addAttribute("message", result.getMessage());
             model.addAttribute("messageType", "failure");
         }
 
@@ -69,15 +70,25 @@ public class MiningPostController {
 
     @PostMapping("/board/mining/verifyCaptcha")
     public String verifyCaptcha(@RequestParam String inputCaptcha, HttpSession session, Model model) {
-        String generatedCaptcha = (String) session.getAttribute("captcha");
-        if (generatedCaptcha != null && generatedCaptcha.equals(inputCaptcha)) {
+        String generatedCaptcha = session.getAttribute("captcha").toString();
+        if (generatedCaptcha != null && generatedCaptcha.toString().equals(inputCaptcha)) {
             session.removeAttribute("captcha");
-            return "redirect:/board/mining";
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String nickname = auth.getName();
+            Member member = memberService.findByNickname(nickname);
+            member.setClickCount(0);
+            memberService.updateMember(member);
+            model.addAttribute("message", "인증에 성공했습니다! 채굴을 계속해서 진행해주세요.");
+            model.addAttribute("messageType", "success");
+
+        } else {
+            model.addAttribute("message", "인증에 실패했습니다. 숫자를 올바르게 입력해주세요.");
+            model.addAttribute("messageType", "failure");
+            model.addAttribute("captcha", generatedCaptcha);
+
         }
 
-        model.addAttribute("error", "CAPTCHA verification failed");
-        model.addAttribute("captcha", generatedCaptcha);
-        return "miningBoard";
+        return showMiningBoard(model);
     }
 
     @GetMapping("/board/1")
@@ -92,3 +103,4 @@ public class MiningPostController {
         return "miningBoard";
     }
 }
+
