@@ -52,7 +52,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/register", "/login", "/resources/**").permitAll()
-                        .requestMatchers("/account", "/board/mining/**").authenticated()
+                        .requestMatchers("/account", "/board/mining/**", "/board/mining/verifyCaptcha").authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -67,7 +67,8 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll()
-                );
+                )
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/board/mining/verifyCaptcha")); // CSRF를 비활성화할 경로 추가
         return http.build();
     }
 }

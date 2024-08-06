@@ -41,6 +41,24 @@ public class MiningPostService {
         double successChance;
         int minePower = member.getMinepower();
         String miningType = post.getTitle().toLowerCase();
+        String message = "";
+
+        if (member.getClickCount() >= 100) {
+            String captcha = (String) session.getAttribute("captcha");
+            if (captcha == null) {
+                captcha = generateCaptcha();
+                session.setAttribute("captcha", captcha);
+            }
+            if (inputCaptcha != null) {
+                if (verifyCaptcha(session, inputCaptcha)) {
+                    member.setClickCount(0);
+                } else {
+                    return new MiningResult(false, 0, "CAPTCHA verification required");
+                }
+            } else {
+                return new MiningResult(false, 0, "CAPTCHA verification required");
+            }
+        }
 
         switch (miningType) {
             case "초급 채굴":
@@ -74,17 +92,22 @@ public class MiningPostService {
         if (isSuccess) {
             member.setGold(member.getGold() + gold);
             memberService.updateMember(member);
+            message = "채굴 성공! " + gold + " 골드를 획득했습니다.";
+        } else {
+            message = "채굴 실패! 골드를 획득하지 못했습니다.";
         }
 
-        return new MiningResult(isSuccess, gold, isSuccess ? "채굴 성공! " + gold + " 골드를 획득했습니다." : "채굴 실패! 골드를 획득하지 못했습니다.");
+        return new MiningResult(isSuccess, gold, message);
     }
+
 
     public Board getMiningBoard() {
         return boardRepository.findByName("채굴게시판");
     }
 
     public String generateCaptcha() {
-        int captcha = random.nextInt(9000) + 1000;
+        Random random = new Random();
+        int captcha = 1000 + random.nextInt(9000);
         return String.valueOf(captcha);
     }
 
