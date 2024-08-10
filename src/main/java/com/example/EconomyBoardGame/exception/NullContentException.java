@@ -1,2 +1,7 @@
-package com.example.EconomyBoardGame.exception;public class NullContentException {
+package com.example.EconomyBoardGame.exception;
+
+public class NullContentException extends RuntimeException{
+    public NullContentException(String message) {
+        super(message);
+    }
 }

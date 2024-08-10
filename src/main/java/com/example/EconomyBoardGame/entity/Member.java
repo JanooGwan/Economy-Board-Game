@@ -23,8 +23,7 @@ public class Member {
     @Size(max = 32, message = "닉네임은 최대 32자까지 가능합니다.")
     private String nickname;
 
-    @Column(nullable = false, length = 32)
-    @Size(max = 32, message = "비밀번호는 최대 32자까지 가능합니다.")
+    @Column(nullable = false, length = 100)
     private String password;
 
     @Column(nullable = false, length = 200)

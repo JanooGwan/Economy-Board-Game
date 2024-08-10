@@ -6,11 +6,13 @@ import com.example.EconomyBoardGame.entity.Post;
 import com.example.EconomyBoardGame.service.BoardService;
 import com.example.EconomyBoardGame.service.MemberService;
 import com.example.EconomyBoardGame.service.PostService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -47,7 +49,16 @@ public class BoardController {
     }
 
     @PostMapping("/{boardId}")
-    public String createPost(@PathVariable Long boardId, @ModelAttribute Post post) {
+    public String createPost(@PathVariable Long boardId, @Valid @ModelAttribute Post post, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            StringBuilder errorMessages = new StringBuilder("제목 또는 내용이 다음과 같은 이유로 너무 깁니다:\n");
+            bindingResult.getFieldErrors().forEach(error -> {
+                errorMessages.append(error.getField()).append(": ").append(error.getDefaultMessage()).append("\n");
+            });
+            model.addAttribute("errorMessage", errorMessages.toString());
+            return "writePost";
+        }
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String nickname = auth.getName();
         Member member = memberService.findByNickname(nickname);
@@ -60,6 +71,7 @@ public class BoardController {
         postService.save(post);
         return "redirect:/board/" + boardId;
     }
+
 
     @GetMapping("/{boardId}/{postId}")
     public String viewPost(@PathVariable Long boardId, @PathVariable Long postId, Model model) {
