@@ -1,6 +1,7 @@
 package com.example.EconomyBoardGame.controller;
 
 import com.example.EconomyBoardGame.entity.Member;
+import com.example.EconomyBoardGame.exception.NicknameAlreadyExistsException;
 import com.example.EconomyBoardGame.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -31,13 +32,14 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public String registerMember(@Valid @ModelAttribute("member") Member member, BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            System.out.println("오류 발생...");
+    public String registerMember(@Valid @ModelAttribute Member member, Model model) {
+        try {
+            memberService.register(member);
+            return "redirect:/login";
+        } catch (NicknameAlreadyExistsException e) {
+            model.addAttribute("errorMessage", "이미 존재하는 닉네임입니다. 다른 닉네임으로 가입해주세요.");
             return "register";
         }
-        memberService.register(member);
-        return "redirect:/login";
     }
 
     @GetMapping("/login")

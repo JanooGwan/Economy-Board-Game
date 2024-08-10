@@ -1,6 +1,7 @@
 package com.example.EconomyBoardGame.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,9 +16,11 @@ public class Post {
     private Long id;
 
     @Column(nullable = false, length = 100)
+    @Size(max = 100, message = "제목은 최대 100자까지 가능합니다.")
     private String title;
 
     @Column(nullable = true, length = 5000)
+    @Size(max = 5000, message = "내용은 최대 5000자까지 가능합니다.")
     private String content;
 
     @ManyToOne(fetch = FetchType.EAGER)

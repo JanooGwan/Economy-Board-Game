@@ -1,5 +1,6 @@
 package com.example.EconomyBoardGame.service;
 
+import com.example.EconomyBoardGame.exception.NicknameAlreadyExistsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.EconomyBoardGame.entity.Member;
@@ -19,6 +20,9 @@ public class MemberService {
 
 
     public Member register(Member member) {
+        if (memberRepository.existsByNickname(member.getNickname())) {
+            throw new NicknameAlreadyExistsException("이미 존재하는 닉네임입니다.");
+        }
         member.setPassword(passwordEncoder.encode(member.getPassword()));
         return memberRepository.save(member);
     }
