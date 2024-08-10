@@ -66,7 +66,7 @@ public class MiningPostService {
         switch (miningType) {
             case "초급 채굴":
                 successChance = 1.0;
-                gold = random.nextInt(3) + 1;
+                gold = random.nextInt(10) + 1;
                 isSuccess = true;
                 break;
             case "중급 채굴":
@@ -77,7 +77,7 @@ public class MiningPostService {
                 }
                 break;
             case "고급 채굴":
-                successChance = 0.1;
+                successChance = 0.3;
                 if (random.nextDouble() <= successChance) {
                     gold = minePower * 10;
                     isSuccess = true;
