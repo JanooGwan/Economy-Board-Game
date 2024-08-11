@@ -5,6 +5,11 @@
 </head>
 <body>
 <h1 th:text="${post.title}"></h1>
+<br>
+<div th:if="${errorMessage}">
+    <p th:text="${errorMessage}" style="color:red;"></p>
+</div>
+<br>
 <p>작성자: <span th:text="${post.writer.nickname}"></span></p>
 <p>작성 날짜: <span th:text="${post.createdDate}"></span></p>
 <p>수정 날짜: <span th:text="${post.updatedDate}"></span></p>

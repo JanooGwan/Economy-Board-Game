@@ -90,8 +90,19 @@ public class BoardController {
     }
 
     @PostMapping("/{boardId}/{postId}/edit")
-    public String editPost(@PathVariable Long boardId, @PathVariable Long postId, @ModelAttribute Post post) {
+    public String editPost(@PathVariable Long boardId, @PathVariable Long postId, @ModelAttribute Post post, Model model) {
         Post existingPost = postService.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String nickname = auth.getName();
+
+        System.out.println(existingPost.getWriter().getNickname());
+        System.out.println(nickname);
+        if (!existingPost.getWriter().getNickname().equals(nickname)) {
+            model.addAttribute("errorMessage", "작성자 본인만 글을 수정할 수 있습니다.");
+            model.addAttribute("post", existingPost);
+            return viewPost(boardId, postId, model);
+        }
+
         existingPost.setTitle(post.getTitle());
         existingPost.setContent(post.getContent());
         existingPost.setUpdatedDate(LocalDateTime.now());
@@ -99,9 +110,21 @@ public class BoardController {
         return "redirect:/board/" + boardId;
     }
 
+
     @PostMapping("/{boardId}/{postId}/delete")
-    public String deletePost(@PathVariable Long boardId, @PathVariable Long postId) {
+    public String deletePost(@PathVariable Long boardId, @PathVariable Long postId, Model model) {
+        Post post = postService.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String nickname = auth.getName();
+
+        if (!post.getWriter().getNickname().equals(nickname)) {
+            model.addAttribute("errorMessage", "작성자 본인만 글을 삭제할 수 있습니다.");
+            model.addAttribute("post", post);
+            return viewPost(boardId, postId, model);
+        }
+
         postService.deleteById(postId);
         return "redirect:/board/" + boardId;
     }
+
 }

@@ -103,4 +103,3 @@ public class MiningPostController {
         return "miningBoard";
     }
 }
-
