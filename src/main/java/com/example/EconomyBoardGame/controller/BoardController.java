@@ -95,8 +95,6 @@ public class BoardController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String nickname = auth.getName();
 
-        System.out.println(existingPost.getWriter().getNickname());
-        System.out.println(nickname);
         if (!existingPost.getWriter().getNickname().equals(nickname)) {
             model.addAttribute("errorMessage", "작성자 본인만 글을 수정할 수 있습니다.");
             model.addAttribute("post", existingPost);
